@@ -21,10 +21,20 @@ The purpose of this app is to create a demo using the gitops philosofy
 
 ## Deploy
 
-### create a new cluster
+### create a new cluster on digitalocean
+
+
+### download the config file and enable on KUBECONFIG
 
 ```
-kind create cluster
+export KUBECONFIG=~/PATH_TO_KUBECONFIG_YAML_FILE
 ```
+
+### inspect nodes
+
+```
+kubectl get nodes
+```
+
 
 By default the cluster 

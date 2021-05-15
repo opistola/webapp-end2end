@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jenkins
+  namespace: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  serviceName: jenkins-svc
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+      - name: jenkins
+        image: jenkins:2.46.2
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: jenkins-pvc
+          mountPath: /var/jenkins_home
+      initContainers:
+      - name: storage-permissions-fix
+        image: busybox
+        command: ["/bin/chmod","-R","777", "/var/jenkins_home"]
+        volumeMounts:
+        - name: jenkins-pvc
+          mountPath: /var/jenkins_home
+  volumeClaimTemplates:
+  - metadata:
+      name: jenkins-pvc
+      namespace: jenkins
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+      storageClassName: do-block-storage
